@@ -12,6 +12,10 @@ export const fetchData = createAsyncThunk('products/fetchData', async()=>{
     const res = await axios.get('http://localhost:3003/products')
     return res.data;
 })
+export const createData = createAsyncThunk('products/createData', async(product)=>{
+    const res = await axios.post('http://localhost:3003/products', product)
+    return(res.data)
+})
 export const deleteData = createAsyncThunk('products/deleteData', async(id)=>{
     const res = await axios.get(`http://localhost:3003/products/${id}`)
     return id;
@@ -36,6 +40,9 @@ export const productsSlice = createSlice({
       })
       .addCase(deleteData.fulfilled, (state,action)=>{
         state.products = state.products.filter(product => product.id !== action.payload)
+      })
+      .addCase(createData.fulfilled, (state,action)=>{
+        state.products.push(action.payload)
       })
       
   }
