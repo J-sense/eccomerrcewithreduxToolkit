@@ -10,7 +10,11 @@ const initialState= {
 }
 export const fetchData = createAsyncThunk('products/fetchData', async()=>{
     const res = await axios.get('http://localhost:3003/products')
-    console.log(res.data)
+    return res.data;
+})
+export const deleteData = createAsyncThunk('products/deleteData', async(id)=>{
+    const res = await axios.get(`http://localhost:3003/products/${id}`)
+    return id;
 })
 export const productsSlice = createSlice({
   name: 'products',
@@ -23,13 +27,17 @@ export const productsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchData.fulfilled, (state, action) => {
-        state.products = action.payload; // Fixed the typo here (from `prducts` to `products`)
+        state.products = action.payload; 
         state.isLoading = false;
       })
       .addCase(fetchData.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Something Went Wrong';
-      });
+      })
+      .addCase(deleteData.fulfilled, (state,action)=>{
+        state.products = state.products.filter(product => product.id !== action.payload)
+      })
+      
   }
 });
 
